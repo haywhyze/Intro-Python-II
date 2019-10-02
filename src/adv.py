@@ -1,5 +1,8 @@
+import textwrap
 from room import Room
+from player import Player
 
+wrapper = textwrap.TextWrapper(width=50)
 # Declare all the rooms
 
 room = {
@@ -38,6 +41,7 @@ room['treasure'].s_to = room['narrow']
 #
 
 # Make a new player object that is currently in the 'outside' room.
+vincent = Player("Vincent", room['outside'])
 
 # Write a loop that:
 #
@@ -49,3 +53,52 @@ room['treasure'].s_to = room['narrow']
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+
+print('\n\tWelcome to The Adventure Game\n')
+print('Please input: \n'
+        + '\tn to move north\n'
+        + '\ts to move south\n'
+        + '\tw to move west\n'
+        + '\te to move east\n')
+print(f"\nCurrent Room: {vincent.getCurrentRoom().getRoomName()}\n")
+print(wrapper.fill(vincent.getCurrentRoom().getRoomDescription())+ "\n")
+
+while True:
+    user_input = input('Where would you like to go next: ')
+    if user_input == "n":
+        if hasattr(vincent.getCurrentRoom(), 'n_to'):
+            vincent.setCurrentRoom(vincent.getCurrentRoom().n_to)
+            print(f"\nCurrent Room: {vincent.getCurrentRoom().getRoomName()}\n")
+            print(wrapper.fill(vincent.getCurrentRoom().getRoomDescription())+ "\n")
+        else:
+            print(f"\nSorry there is nothing up north...\n")
+    elif user_input == "w":
+        if hasattr(vincent.getCurrentRoom(), 'w_to'):
+            vincent.setCurrentRoom(vincent.getCurrentRoom().w_to)
+            print(f"\nCurrent Room: {vincent.getCurrentRoom().getRoomName()}\n")
+            print(wrapper.fill(vincent.getCurrentRoom().getRoomDescription())+ "\n")
+        else:
+            print(f"\nSorry there is nothing to the west...\n")
+    elif user_input == "s":
+        if hasattr(vincent.getCurrentRoom(), 's_to'):
+            vincent.setCurrentRoom(vincent.getCurrentRoom().s_to)
+            print(f"\nCurrent Room: {vincent.getCurrentRoom().getRoomName()}\n")
+            print(wrapper.fill(vincent.getCurrentRoom().getRoomDescription())+ "\n")
+        else:
+            print(f"\nSorry there is nothing down south...\n")
+    elif user_input == "e":
+        if hasattr(vincent.getCurrentRoom(), 'e_to'):
+            vincent.setCurrentRoom(vincent.getCurrentRoom().e_to)
+            print(f"\nCurrent Room: {vincent.getCurrentRoom().getRoomName()}\n")
+            print(wrapper.fill(vincent.getCurrentRoom().getRoomDescription())+ "\n")
+        else:
+            print(f"\nSorry there is nothing to the east...\n")
+    elif user_input == "q":
+        print('\nThanks for playing... Come back for more fun\n')
+        break
+    else:
+        print('\nWrong Input Please input: \n'
+            + '\tn to move north\n'
+            + '\ts to move south\n'
+            + '\tw to move west\n'
+            + '\te to move east\n')
