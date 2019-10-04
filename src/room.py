@@ -12,9 +12,13 @@ class Room:
 
     def getRoomDescription(self):
         return self.description
-
-    def __str__(self):
+    
+    def items_str(self):
         item_str = ""
+        if len(self.items) == 0:
+            item_str = "No items in this room"
         for item in self.items:
-            item_str += (" "+ item.name)
-        return f"\nCurrent Room: {self.name} - {self.description}\n\nItems: {item_str}"
+            item_str += ("\n "+ item.name)
+        return item_str
+    def __str__(self):
+        return f"\nCurrent Room: {self.name} - {self.description}\n\nItems: {self.items_str()}"
