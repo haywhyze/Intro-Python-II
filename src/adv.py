@@ -85,7 +85,20 @@ room['treasure'].s_to = room['narrow']
 
 # Make a new player object that is currently in the 'outside' room.
 vincent = Player("Vincent", room['outside'])
-
+def printInstructions():
+    print('**************************')
+    print('* Please input direction to go or action to take')
+    print('* Allowed directions are: \n'
+            + '*  n to move north\n'
+            + '*  s to move south\n'
+            + '*  w to move west\n'
+            + '*  e to move east')
+    print('* Allowed actions are \n* `get item` or `take item` to pick an item\n'
+            + '* `drop item` to put an item from your inventory into a room\n' 
+            + '* i or inventory to show items in your inventory\n'
+            + '* l or list to show items in current room\n'
+            + '* where `item` is the name of the item you want to pick or drop')
+    print('**************************')
 # Write a loop that:
 #
 # * Prints the current room name
@@ -97,17 +110,49 @@ vincent = Player("Vincent", room['outside'])
 #
 # If the user enters "q", quit the game.
 
-print('\n\tWelcome to The Adventure Game\n')
-print('Please input: \n'
-        + '\tn to move north\n'
-        + '\ts to move south\n'
-        + '\tw to move west\n'
-        + '\te to move east')
+print('\n  **Welcome to The Adventure Game\n')
+printInstructions()
 print(vincent.getCurrentRoom())
 
 while True:
-    user_input = input('\nWhere would you like to go next: ')
-    if user_input == "n":
+    user_input = input('\nInput direction to go or action to do: ')
+    splitted_user_input = user_input.split(' ')
+    if len(splitted_user_input) == 2:
+        if splitted_user_input[0] == 'take' or splitted_user_input[0] == 'get':
+            # check if item exist in current room
+            item_exist = False
+            for i in vincent.getCurrentRoom().items:
+                if i.name.lower() == splitted_user_input[1].lower():
+                    item_exist = True
+            if item_exist:
+                # add item to player inventory
+                vincent.items.append(item[splitted_user_input[1].lower()])
+                item[splitted_user_input[1].lower()].on_take()
+                # and remove from room
+                vincent.getCurrentRoom().items.remove(item[splitted_user_input[1].lower()])
+            else:
+                print(splitted_user_input[1].capitalize() + ' is not in this room')
+        elif splitted_user_input[0] == 'drop':
+            item_exist = False
+            # check if item exist in player's inventory
+            for i in vincent.items:
+                if i.name.lower() == splitted_user_input[1].lower():
+                    item_exist = True
+            if item_exist:
+                # remove item from player inventory
+                vincent.items.remove(item[splitted_user_input[1].lower()])
+                item[splitted_user_input[1].lower()].on_drop()
+                # and add it to the room
+                vincent.getCurrentRoom().items.append(item[splitted_user_input[1].lower()])
+            else:
+                print(splitted_user_input[1].capitalize() + ' is not in your inventory')
+        else:
+            print('Wrong Input. Please use get, take or drop keyword with an item')
+    elif user_input == "i" or user_input == "inventory":
+        vincent.printInventory()
+    elif user_input == "l" or user_input == "list":
+        print("\nItems in this room: " + vincent.getCurrentRoom().items_str())
+    elif user_input == "n":
         if hasattr(vincent.getCurrentRoom(), 'n_to'):
             vincent.setCurrentRoom(vincent.getCurrentRoom().n_to)
             print(vincent.getCurrentRoom())
@@ -135,8 +180,5 @@ while True:
         print('\nThanks for playing... Come back for more fun\n')
         break
     else:
-        print('\nWrong Input Please input: \n'
-            + '\tn to move north\n'
-            + '\ts to move south\n'
-            + '\tw to move west\n'
-            + '\te to move east\n')
+        print('Wrong Input!!!\n Please input direction to go or action to take')
+        printInstructions()
